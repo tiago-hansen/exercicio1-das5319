@@ -11,7 +11,12 @@ while True:
     print('Conectado por', addr)
 
     filename = 'teste.csv'
-    filesize = os.path.getsize(filename)
+    try:
+        filesize = os.path.getsize(filename)
+    except FileNotFoundError:
+        print('Arquivo não encontrado')
+        conn.close()
+        continue
 
     # Send file size to client
     conn.send(str(filesize).encode())

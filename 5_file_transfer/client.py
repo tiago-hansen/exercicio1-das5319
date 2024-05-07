@@ -1,5 +1,6 @@
 import socket
 import time
+import csv
 
 s = socket.socket()
 host = 'localhost'
@@ -13,7 +14,8 @@ with open(filename, 'ab') as f:
     print('Arquivo aberto')
 
     # Receive file size from server
-    filesize = int(s.recv(1024).decode())
+    filesize = int(s.recv(1024).decode().strip().split()[0])
+    print('Tamanho do arquivo:', filesize)
 
     # Receive file content from server
     received_size = 0
@@ -22,26 +24,14 @@ with open(filename, 'ab') as f:
         received_size += len(data)
         f.write(data)
 
+    f.close()
     print('Arquivo recebido com sucesso')
 
 # Append a new line to the received file
 time.sleep(3)
-with open(filename, 'ab') as f:
-    f.write(b'\nNova linha adicionada pelo cliente')
-
-# Send the modified file back to the server
-with open(filename, 'rb') as f:
-    # Send file size to server
-    s.send(str(filesize).encode())
-
-    # Send file content to server
-    while True:
-        data = f.read(1024*16)
-        if not data:
-            break
-        s.send(data)
-
-    print('Arquivo modificado enviado de volta para o servidor')
+with open(filename, 'a', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['Nova linha adicionada pelo cliente'])
 
 s.close()
 print('Conexão fechada')
