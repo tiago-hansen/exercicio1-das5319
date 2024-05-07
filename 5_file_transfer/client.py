@@ -1,4 +1,5 @@
 import socket
+import time
 
 s = socket.socket()
 host = 'localhost'
@@ -8,7 +9,7 @@ s.connect((host, port))
 print('Conexão estabelecida com o servidor')
 
 filename = 'teste.csv'
-with open(filename, 'wb') as f:
+with open(filename, 'ab') as f:
     print('Arquivo aberto')
 
     # Receive file size from server
@@ -24,6 +25,7 @@ with open(filename, 'wb') as f:
     print('Arquivo recebido com sucesso')
 
 # Append a new line to the received file
+time.sleep(3)
 with open(filename, 'ab') as f:
     f.write(b'\nNova linha adicionada pelo cliente')
 
